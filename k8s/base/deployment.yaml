@@ -4,6 +4,7 @@ metadata:
   name: tbc-gitops-api
 spec:
   replicas: 2
+  progressDeadlineSeconds: 30
 
   selector:
     matchLabels:
@@ -28,7 +29,7 @@ spec:
                 name: tbc-gitops-config
 
             - secretRef:
-                name: tbc-gitops-secret
+                name: tbc-gitops-secret-missing
 
           readinessProbe:
             httpGet:
