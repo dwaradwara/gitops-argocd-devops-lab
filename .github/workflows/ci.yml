@@ -1,0 +1,58 @@
+name: GitOps Lab CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate Python syntax
+        run: python -m py_compile app/main.py
+
+      - name: Validate Kubernetes YAML
+        run: |
+          pip install pyyaml
+          python - <<'PY'
+          import pathlib
+          import yaml
+
+          for path in pathlib.Path("k8s").rglob("*.yaml"):
+              with open(path) as f:
+                  list(yaml.safe_load_all(f))
+              print(f"validated: {path}")
+          PY
+
+      - name: Build application image
+        run: docker build -t tbc-gitops-api:ci ./app
+
+      - name: Run container
+        run: |
+          docker run -d \
+            --name tbc-gitops-api-ci \
+            -p 8000:8000 \
+            -e APP_VERSION=ci \
+            tbc-gitops-api:ci
+
+      - name: Validate health endpoint
+        run: |
+          for i in {1..10}; do
+            if curl -fsS http://localhost:8000/health; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs tbc-gitops-api-ci
+          exit 1
