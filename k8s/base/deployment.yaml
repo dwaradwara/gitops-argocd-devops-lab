@@ -4,6 +4,7 @@ metadata:
   name: tbc-gitops-api
 spec:
   replicas: 2
+  progressDeadlineSeconds: 30
 
   selector:
     matchLabels:
@@ -17,7 +18,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: tbc-gitops-api:v1
+          image: tbc-gitops-api:v2-broken
           imagePullPolicy: IfNotPresent
 
           ports:
