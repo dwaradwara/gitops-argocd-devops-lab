@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tbc-gitops-api
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: tbc-gitops-api
+
+  template:
+    metadata:
+      labels:
+        app: tbc-gitops-api
+
+    spec:
+      containers:
+        - name: api
+          image: tbc-gitops-api:v1
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8000
+
+          envFrom:
+            - configMapRef:
+                name: tbc-gitops-config
+
+            - secretRef:
+                name: tbc-gitops-secret
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10

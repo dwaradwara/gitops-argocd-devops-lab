@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tbc-gitops-config
+data:
+  APP_VERSION: "v1"
+  APP_MESSAGE: "Deployed through ArgoCD GitOps"
