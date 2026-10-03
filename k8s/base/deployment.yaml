@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: tbc-gitops-api:v1
+          image: tbc-gitops-api:v2
           imagePullPolicy: IfNotPresent
 
           ports:

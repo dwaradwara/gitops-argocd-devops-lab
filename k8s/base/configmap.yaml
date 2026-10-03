@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: tbc-gitops-config
 data:
-  APP_VERSION: "v1"
-  APP_MESSAGE: "Deployed through ArgoCD GitOps"
+  APP_VERSION: "v2"
+  APP_MESSAGE: "Successful v2 release through ArgoCD"
